@@ -1,55 +1,58 @@
-#include <stdio.h>    // Untuk fungsi input/output seperti printf dan scanf
-#include <limits.h>   // Untuk nilai INT_MAX dan INT_MIN
+#include <stdio.h>   
+#include <limits.h>  
+#include <float.h>   
 
 int main() {
-    int n;            // Variabel untuk menyimpan jumlah bilangan yang akan dimasukkan
-    int num;          // Variabel sementara untuk setiap bilangan yang dimasukkan
-    int min_val = INT_MAX; // Inisialisasi nilai minimum dengan nilai integer maksimum
-    int max_val = INT_MIN; // Inisialisasi nilai maksimum dengan nilai integer minimum
-    int first_num = 0;    // Menyimpan bilangan pertama
-    int second_num = 0;   // Menyimpan bilangan kedua
-    float average_of_first_two; // Menyimpan rata-rata dua bilangan pertama
-
-    // Membaca jumlah bilangan (n)
-    scanf("%d", &n);
-
-    // Iterasi untuk membaca n bilangan
-    for (int i = 0; i < n; i++) {
-        scanf("%d", &num); // Membaca bilangan berikutnya
-
-        // Menyimpan dua bilangan pertama untuk perhitungan rata-rata
-        if (i == 0) {
-            first_num = num;
-        } else if (i == 1) {
-            second_num = num;
-        }
-
-        // Memperbarui nilai minimum jika bilangan yang baru lebih kecil
-        if (num < min_val) {
-            min_val = num;
-        }
-
-        // Memperbarui nilai maksimum jika bilangan yang baru lebih besar
-        if (num > max_val) {
-            max_val = num;
-        }
+    int n; 
+    if (scanf("%d", &n) != 1 || n <= 0) {
+        fprintf(stderr, "Error: Masukkan jumlah baris (n) harus berupa bilangan bulat positif.\n");
+        return 1; 
     }
 
-    // Menampilkan nilai terkecil dan terbesar sesuai format output
+    int min_val = INT_MAX; 
+    int max_val = INT_MIN; 
+    
+    double min_avg = DBL_MAX; 
+    int prev_val;            
+    int current_val;         
+
+    
+    for (int i = 0; i < n; i++) {
+        if (scanf("%d", &current_val) != 1) {
+            fprintf(stderr, "Error: Masukan ke-%d bukan bilangan bulat yang valid.\n", i + 1);
+            return 1; // Keluar dengan kode error
+        }
+
+        // Memperbarui nilai minimum jika nilai saat ini lebih kecil
+        if (current_val < min_val) {
+            min_val = current_val;
+        }
+
+        // Memperbarui nilai maksimum jika nilai saat ini lebih besar
+        if (current_val > max_val) {
+            max_val = current_val;
+        }
+
+        // Jika ini bukan elemen pertama, hitung rata-rata dengan nilai sebelumnya
+        if (i > 0) {
+            double current_avg = (double)(prev_val + current_val) / 2.0;
+            if (current_avg < min_avg) {
+                min_avg = current_avg;
+            }
+        }
+        
+        // Simpan nilai saat ini sebagai nilai sebelumnya untuk iterasi berikutnya
+        prev_val = current_val;
+    }
+
     printf("%d\n", min_val);
     printf("%d\n", max_val);
-
-    // Menghitung dan menampilkan rata-rata dari dua bilangan pertama
-    // Pastikan n setidaknya 2 untuk menghindari pembagian dengan nol atau nilai yang tidak valid
+    
     if (n >= 2) {
-        average_of_first_two = (float)(first_num + second_num) / 2.0;
-        printf("%.2f\n", average_of_first_two);
+        printf("%.2f\n", min_avg);
     } else {
-        // Jika hanya ada 0 atau 1 input, rata-rata dari dua bilangan pertama tidak dapat dihitung
-        // Sesuai contoh, diasumsikan selalu ada setidaknya 2 input untuk perhitungan ini.
-        // Jika tidak, Anda bisa menambahkan penanganan error atau output yang berbeda.
-        // Untuk mengikuti contoh, kita mengasumsikan n >= 2.
+       
     }
 
-    return 0; // Mengindikasikan program berakhir dengan sukses
+    return 0; 
 }

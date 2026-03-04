@@ -1,78 +1,60 @@
-#include <stdio.h>    // Untuk fungsi input/output seperti printf dan scanf
-#include <limits.h>   // Untuk nilai INT_MAX dan INT_MIN
-#include <float.h>    // Untuk DBL_MAX dan DBL_MIN
+#include <stdio.h>
+#include <limits.h>
+#include <float.h>
 
 int main() {
-    int n;            // Variabel untuk menyimpan jumlah bilangan yang akan dimasukkan
-    int num;          // Variabel sementara untuk setiap bilangan yang dimasukkan
-    int min_val = INT_MAX; // Inisialisasi nilai minimum dengan nilai integer maksimum
-    int max_val = INT_MIN; // Inisialisasi nilai maksimum dengan nilai integer minimum
+    int n;
 
-    // Deklarasi array untuk menyimpan semua bilangan yang dimasukkan
-    // Ukuran maksimum array (misal 1000) bisa disesuaikan jika n sangat besar
-    int numbers[1000];
-    int count = 0; // Untuk melacak berapa banyak angka yang benar-benar dimasukkan
+    if (scanf("%d", &n) != 1 || n <= 0) {
+        fprintf(stderr, "Error: Masukkan jumlah baris (n) harus berupa bilangan bulat positif.\n");
+        return 1;
+    }
 
-    // Membaca jumlah bilangan (n)
-    scanf("%d", &n);
+    int min_val = INT_MAX;
+    int max_val = INT_MIN;
+    
+    double min_avg = DBL_MAX;
+    double max_avg = DBL_MIN;
 
-    // Iterasi untuk membaca n bilangan dan menyimpannya dalam array
+    int prev_val;
+    int current_val;
+
     for (int i = 0; i < n; i++) {
-        scanf("%d", &num); // Membaca bilangan berikutnya
-        if (count < 1000) { // Memastikan tidak melebihi kapasitas array
-            numbers[count] = num;
-            count++;
+        if (scanf("%d", &current_val) != 1) {
+            fprintf(stderr, "Error: Masukan ke-%d bukan bilangan bulat yang valid.\n", i + 1);
+            return 1;
         }
 
-        // Memperbarui nilai minimum jika bilangan yang baru lebih kecil
-        if (num < min_val) {
-            min_val = num;
+        if (current_val < min_val) {
+            min_val = current_val;
         }
 
-        // Memperbarui nilai maksimum jika bilangan yang baru lebih besar
-        if (num > max_val) {
-            max_val = num;
+        if (current_val > max_val) {
+            max_val = current_val;
         }
-    }
 
-    // Inisialisasi rata-rata terendah dan tertinggi
-    double min_avg_pair = DBL_MAX; // Menggunakan DBL_MAX untuk inisialisasi rata-rata terendah
-    double max_avg_pair = DBL_MIN; // Menggunakan DBL_MIN untuk inisialisasi rata-rata tertinggi
-
-    // Iterasi untuk menghitung rata-rata dari setiap pasangan bilangan berurutan
-    // Loop berjalan hingga count - 1 karena kita mengambil numbers[i] dan numbers[i+1]
-    if (count >= 2) { // Pastikan ada setidaknya dua angka untuk membuat pasangan
-        for (int i = 0; i < count - 1; i++) {
-            double current_avg = (double)(numbers[i] + numbers[i+1]) / 2.0;
-
-            if (current_avg < min_avg_pair) {
-                min_avg_pair = current_avg;
+        if (i > 0) {
+            double current_avg = (double)(prev_val + current_val) / 2.0;
+            
+            if (current_avg < min_avg) {
+                min_avg = current_avg;
             }
-            if (current_avg > max_avg_pair) {
-                max_avg_pair = current_avg;
+            
+            if (current_avg > max_avg) {
+                max_avg = current_avg;
             }
         }
+        
+        prev_val = current_val;
     }
 
-    // Menampilkan nilai terkecil dan terbesar
     printf("%d\n", min_val);
     printf("%d\n", max_val);
 
-    // Menampilkan rata-rata terendah dari pasangan berurutan
-    if (count >= 2) {
-        printf("%.2f\n", min_avg_pair);
-    } else {
-        // Jika tidak ada pasangan, bisa tampilkan 0.00 atau pesan error
-        printf("%.2f\n", 0.00);
-    }
+    if (n >= 2) {
+        printf("%.2f\n", min_avg);
+        printf("%.2f\n", max_avg);
+    } 
 
-    // Menampilkan rata-rata tertinggi dari pasangan berurutan
-    if (count >= 2) {
-        printf("%.2f\n", max_avg_pair);
-    } else {
-        // Jika tidak ada pasangan, bisa tampilkan 0.00 atau pesan error
-        printf("%.2f\n", 0.00);
-    }
-
-    return 0; // Mengindikasikan program berakhir dengan sukses
+    return 0;
 }
